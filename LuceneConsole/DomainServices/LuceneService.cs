@@ -1,6 +1,7 @@
 ﻿using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
@@ -11,7 +12,7 @@ namespace LuceneConsole.DomainServices
     {
         const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
 
-        public static void InitializeIndex(string folderPath)
+        public static void InitializeIndex(string folderPath, ProgressBar progressBar)
         {
             var indexPath = Path.Combine(folderPath, "index");
 
@@ -42,31 +43,38 @@ namespace LuceneConsole.DomainServices
                     new TextField("Content", content, Field.Store.YES)
                 };
                 writer.AddDocument(document);
+                progressBar.Value++;
             }
 
             writer.Flush(triggerMerge: false, applyAllDeletes: false);
+        }
 
-            // Querying is not working, need to investigate more
-            var phrase = new MultiPhraseQuery
-            {
-                new Term("Content", "Conan")
-            };
+        public static IEnumerable<string> GetResults(string folderPath, string query)
+        {
+            var indexPath = Path.Combine(folderPath, "index");
+            
+            using var dir = FSDirectory.Open(indexPath);
+
+            var analyzer = new StandardAnalyzer(AppLuceneVersion);
+
+            var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
+            using var writer = new IndexWriter(dir, indexConfig);
+
+            var parser = new QueryParser(AppLuceneVersion, "Content", analyzer);
+            Query luceneQuery = parser.Parse(query);
 
             using var reader = writer.GetReader(applyAllDeletes: true);
             var searcher = new IndexSearcher(reader);
-            var hits = searcher.Search(phrase, 20).ScoreDocs;
+            var hits = searcher.Search(luceneQuery, 20).ScoreDocs;
 
-            // Display somehow the results, old code not working
-            Console.WriteLine($"{"Score",10}" +
-                $" {"Name",-15}" +
-                $" {"Favorite Phrase",-40}");
+            var results = new List<string>();
             foreach (var hit in hits)
             {
                 var foundDoc = searcher.Doc(hit.Doc);
-                Console.WriteLine($"{hit.Score:f8}" +
-                    $" {foundDoc.Get("name"),-15}" +
-                    $" {foundDoc.Get("favoritePhrase"),-40}");
+                results.Add($"{foundDoc.Get("Title")} by {foundDoc.Get("Author")}");
             }
+
+            return results;
         }
     }
 }

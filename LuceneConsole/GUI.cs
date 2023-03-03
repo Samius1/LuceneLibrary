@@ -1,4 +1,5 @@
 using LuceneConsole.DomainServices;
+using LuceneConsole.Views;
 
 namespace LuceneConsole
 {
@@ -33,21 +34,10 @@ namespace LuceneConsole
 
         private void BtnLoad_Click(object sender, EventArgs e)
         {
-            var folderPath = TxtFolder.Text;
-
-            if (Directory.Exists(folderPath))
+            if (Directory.Exists(TxtFolder.Text))
             {
-                if (ValidateFiles(folderPath))
-                {
-                    if (DefaultSourceButton.Checked)
-                    {
-                        LuceneService.InitializeIndex(folderPath);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }
+                ShowLoadingUI();
+
             }
             else
             {
@@ -56,26 +46,43 @@ namespace LuceneConsole
             }
         }
 
-        private static bool ValidateFiles(string folderPath)
+        private void ShowLoadingUI()
         {
-            var invalidFiles = string.Empty;
-            foreach (var file in Directory.GetFiles(folderPath))
+            var folderPath = TxtFolder.Text;
+
+            var modalUI = new LoadDataUI();
+            modalUI.FolderPath = folderPath;
+            modalUI.UseDefaultData = DefaultSourceButton.Checked;
+
+            var result = modalUI.ShowDialog();
+
+            if (result == DialogResult.OK)
             {
-                if (!file.EndsWith(".txt"))
+                TxtSearch.Visible = true;
+                TemporalShowResults.Visible = true;
+            }
+            else
+            {
+                TxtSearch.Text = string.Empty;
+                TemporalShowResults.Text = string.Empty;
+                TxtSearch.Visible = false;
+                TemporalShowResults.Visible = false;
+            }
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                TemporalShowResults.Text = Environment.NewLine;
+
+                var results = LuceneService.GetResults(TxtFolder.Text, TxtSearch.Text);
+
+                foreach (var result in results)
                 {
-                    invalidFiles += file + Environment.NewLine;
+                    TemporalShowResults.Text += result + Environment.NewLine;
                 }
             }
-
-            if (string.IsNullOrEmpty(invalidFiles))
-            {
-                return true;
-            }
-
-            MessageBox.Show("The following files are not valid." + Environment.NewLine + invalidFiles,
-                "Invalid files", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            return false;
         }
     }
 }
