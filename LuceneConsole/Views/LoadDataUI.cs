@@ -13,12 +13,17 @@ namespace LuceneConsole.Views
             InitializeComponent();
         }
 
+        private void LoadDataUI_Load(object sender, EventArgs e)
+        {
+            Text = "Validating files";
+        }
+
         private void LoadDataUI_Shown(object sender, EventArgs e)
         {
-            Refresh();
-            if (ValidateFiles(FolderPath))
+            CleanUpFiles();
+
+            if (ValidateFiles())
             {
-                Thread.Sleep(1000);
                 Text = "Creating Index";
                 if (UseDefaultData)
                 {
@@ -38,10 +43,26 @@ namespace LuceneConsole.Views
             BtnCloseUI.Enabled = true;
         }
 
-        private bool ValidateFiles(string folderPath)
+        private void CleanUpFiles()
+        {
+            var indexPath = Path.Combine(FolderPath, "index");
+            var directoryInfo = new DirectoryInfo(indexPath);
+            try
+            {
+                foreach (var file in directoryInfo.GetFiles())
+                {
+                    file.Delete();
+                }
+            }
+            catch (Exception exception)
+            {
+            }
+        }
+
+        private bool ValidateFiles()
         {
             var invalidFiles = string.Empty;
-            var files = Directory.GetFiles(folderPath);
+            var files = Directory.GetFiles(FolderPath);
             ProgressBarIndex.Maximum = files.Length;
 
             foreach (var file in files)
@@ -68,11 +89,20 @@ namespace LuceneConsole.Views
         {
             if (Succesfull)
             {
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
             }
             else
             {
-                this.DialogResult = DialogResult.Cancel;
+                DialogResult = DialogResult.Abort;
+            }
+        }
+
+        private void LoadDataUI_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("This action is restricted. Try to click the \"Close\" button.", "Action forbidden", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                e.Cancel = true;
             }
         }
     }

@@ -61,6 +61,98 @@ namespace LuceneConsole.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a a
+        ///about
+        ///above
+        ///across
+        ///after
+        ///afterwards
+        ///again
+        ///against
+        ///all
+        ///almost
+        ///alone
+        ///along
+        ///already
+        ///also
+        ///although
+        ///always
+        ///am
+        ///among
+        ///amongst
+        ///amoungst
+        ///amount
+        ///an
+        ///and
+        ///another
+        ///any
+        ///anyhow
+        ///anyone
+        ///anything
+        ///anyway
+        ///anywhere
+        ///are
+        ///around
+        ///as
+        ///at
+        ///back
+        ///be
+        ///became
+        ///because
+        ///become
+        ///becomes
+        ///becoming
+        ///been
+        ///before
+        ///beforehand
+        ///behind
+        ///being
+        ///below
+        ///beside
+        ///besides
+        ///between
+        ///beyond
+        ///bill
+        ///both
+        ///bottom
+        ///but
+        ///by
+        ///call
+        ///can
+        ///cannot
+        ///cant
+        ///co
+        ///computer
+        ///con
+        ///could
+        ///couldnt
+        ///cry
+        ///de
+        ///describe
+        ///detail
+        ///do
+        ///done
+        ///down
+        ///due
+        ///during
+        ///each
+        ///eg
+        ///eight
+        ///either
+        ///eleven
+        ///else
+        ///elsewhere
+        ///empty
+        ///enough
+        ///etc [resto de la cadena truncado]&quot;;.
+        /// </summary>
+        internal static string english_stopwords {
+            get {
+                return ResourceManager.GetString("english_stopwords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap search {

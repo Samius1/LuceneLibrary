@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
             OptionsPanel = new Panel();
             FolderGroupBox = new GroupBox();
             TxtFolder = new TextBox();
@@ -38,11 +39,13 @@
             CustomSourceButton = new RadioButton();
             DefaultSourceButton = new RadioButton();
             TxtSearch = new TextBox();
-            TemporalShowResults = new RichTextBox();
+            PanelSearchResult = new Panel();
+            PanelResults = new Panel();
             OptionsPanel.SuspendLayout();
             FolderGroupBox.SuspendLayout();
             PanelFolderButtons.SuspendLayout();
             TypeOfSourceGroupBox.SuspendLayout();
+            PanelSearchResult.SuspendLayout();
             SuspendLayout();
             // 
             // OptionsPanel
@@ -51,9 +54,8 @@
             OptionsPanel.Controls.Add(TypeOfSourceGroupBox);
             OptionsPanel.Dock = DockStyle.Top;
             OptionsPanel.Location = new Point(0, 0);
-            OptionsPanel.Margin = new Padding(3, 2, 3, 2);
             OptionsPanel.Name = "OptionsPanel";
-            OptionsPanel.Size = new Size(700, 55);
+            OptionsPanel.Size = new Size(800, 73);
             OptionsPanel.TabIndex = 0;
             // 
             // FolderGroupBox
@@ -61,11 +63,9 @@
             FolderGroupBox.Controls.Add(TxtFolder);
             FolderGroupBox.Controls.Add(PanelFolderButtons);
             FolderGroupBox.Dock = DockStyle.Fill;
-            FolderGroupBox.Location = new Point(163, 0);
-            FolderGroupBox.Margin = new Padding(3, 2, 3, 2);
+            FolderGroupBox.Location = new Point(186, 0);
             FolderGroupBox.Name = "FolderGroupBox";
-            FolderGroupBox.Padding = new Padding(3, 2, 3, 2);
-            FolderGroupBox.Size = new Size(537, 55);
+            FolderGroupBox.Size = new Size(614, 73);
             FolderGroupBox.TabIndex = 1;
             FolderGroupBox.TabStop = false;
             FolderGroupBox.Text = "Select a folder and load";
@@ -73,11 +73,10 @@
             // TxtFolder
             // 
             TxtFolder.Dock = DockStyle.Fill;
-            TxtFolder.Location = new Point(3, 18);
-            TxtFolder.Margin = new Padding(3, 2, 3, 2);
+            TxtFolder.Location = new Point(3, 23);
             TxtFolder.Name = "TxtFolder";
             TxtFolder.ReadOnly = true;
-            TxtFolder.Size = new Size(424, 23);
+            TxtFolder.Size = new Size(486, 27);
             TxtFolder.TabIndex = 3;
             // 
             // PanelFolderButtons
@@ -85,18 +84,16 @@
             PanelFolderButtons.Controls.Add(BtnLoad);
             PanelFolderButtons.Controls.Add(BtnSelectFolder);
             PanelFolderButtons.Dock = DockStyle.Right;
-            PanelFolderButtons.Location = new Point(427, 18);
-            PanelFolderButtons.Margin = new Padding(3, 2, 3, 2);
+            PanelFolderButtons.Location = new Point(489, 23);
             PanelFolderButtons.Name = "PanelFolderButtons";
-            PanelFolderButtons.Size = new Size(107, 35);
+            PanelFolderButtons.Size = new Size(122, 47);
             PanelFolderButtons.TabIndex = 2;
             // 
             // BtnLoad
             // 
-            BtnLoad.Location = new Point(40, 0);
-            BtnLoad.Margin = new Padding(3, 2, 3, 2);
+            BtnLoad.Location = new Point(46, 0);
             BtnLoad.Name = "BtnLoad";
-            BtnLoad.Size = new Size(64, 25);
+            BtnLoad.Size = new Size(73, 33);
             BtnLoad.TabIndex = 1;
             BtnLoad.Text = "Load";
             BtnLoad.UseVisualStyleBackColor = true;
@@ -107,9 +104,8 @@
             BtnSelectFolder.BackgroundImage = Properties.Resources.search;
             BtnSelectFolder.BackgroundImageLayout = ImageLayout.Stretch;
             BtnSelectFolder.Location = new Point(3, 0);
-            BtnSelectFolder.Margin = new Padding(3, 2, 3, 2);
             BtnSelectFolder.Name = "BtnSelectFolder";
-            BtnSelectFolder.Size = new Size(32, 25);
+            BtnSelectFolder.Size = new Size(37, 33);
             BtnSelectFolder.TabIndex = 0;
             BtnSelectFolder.UseVisualStyleBackColor = true;
             BtnSelectFolder.Click += BtnSelectFolder_Click;
@@ -120,10 +116,8 @@
             TypeOfSourceGroupBox.Controls.Add(DefaultSourceButton);
             TypeOfSourceGroupBox.Dock = DockStyle.Left;
             TypeOfSourceGroupBox.Location = new Point(0, 0);
-            TypeOfSourceGroupBox.Margin = new Padding(3, 2, 3, 2);
             TypeOfSourceGroupBox.Name = "TypeOfSourceGroupBox";
-            TypeOfSourceGroupBox.Padding = new Padding(3, 2, 3, 2);
-            TypeOfSourceGroupBox.Size = new Size(163, 55);
+            TypeOfSourceGroupBox.Size = new Size(186, 73);
             TypeOfSourceGroupBox.TabIndex = 0;
             TypeOfSourceGroupBox.TabStop = false;
             TypeOfSourceGroupBox.Text = "Select a source";
@@ -132,10 +126,9 @@
             // 
             CustomSourceButton.AutoSize = true;
             CustomSourceButton.Dock = DockStyle.Top;
-            CustomSourceButton.Location = new Point(3, 37);
-            CustomSourceButton.Margin = new Padding(3, 2, 3, 2);
+            CustomSourceButton.Location = new Point(3, 47);
             CustomSourceButton.Name = "CustomSourceButton";
-            CustomSourceButton.Size = new Size(157, 19);
+            CustomSourceButton.Size = new Size(180, 24);
             CustomSourceButton.TabIndex = 1;
             CustomSourceButton.TabStop = true;
             CustomSourceButton.Text = "Custom source";
@@ -145,10 +138,9 @@
             // 
             DefaultSourceButton.AutoSize = true;
             DefaultSourceButton.Dock = DockStyle.Top;
-            DefaultSourceButton.Location = new Point(3, 18);
-            DefaultSourceButton.Margin = new Padding(3, 2, 3, 2);
+            DefaultSourceButton.Location = new Point(3, 23);
             DefaultSourceButton.Name = "DefaultSourceButton";
-            DefaultSourceButton.Size = new Size(157, 19);
+            DefaultSourceButton.Size = new Size(180, 24);
             DefaultSourceButton.TabIndex = 0;
             DefaultSourceButton.TabStop = true;
             DefaultSourceButton.Text = "Default source";
@@ -157,45 +149,53 @@
             // TxtSearch
             // 
             TxtSearch.Dock = DockStyle.Top;
-            TxtSearch.Location = new Point(0, 55);
-            TxtSearch.Margin = new Padding(3, 2, 3, 2);
+            TxtSearch.Location = new Point(0, 0);
             TxtSearch.Name = "TxtSearch";
             TxtSearch.PlaceholderText = "Insert your query here";
-            TxtSearch.Size = new Size(700, 23);
+            TxtSearch.Size = new Size(800, 27);
             TxtSearch.TabIndex = 1;
             TxtSearch.Visible = false;
             TxtSearch.KeyDown += TxtSearch_KeyDown;
             // 
-            // TemporalShowResults
+            // PanelSearchResult
             // 
-            TemporalShowResults.Dock = DockStyle.Fill;
-            TemporalShowResults.Location = new Point(0, 78);
-            TemporalShowResults.Margin = new Padding(3, 2, 3, 2);
-            TemporalShowResults.Name = "TemporalShowResults";
-            TemporalShowResults.Size = new Size(700, 260);
-            TemporalShowResults.TabIndex = 2;
-            TemporalShowResults.Text = "";
-            TemporalShowResults.Visible = false;
+            PanelSearchResult.Controls.Add(PanelResults);
+            PanelSearchResult.Controls.Add(TxtSearch);
+            PanelSearchResult.Dock = DockStyle.Fill;
+            PanelSearchResult.Location = new Point(0, 73);
+            PanelSearchResult.Name = "PanelSearchResult";
+            PanelSearchResult.Size = new Size(800, 378);
+            PanelSearchResult.TabIndex = 2;
+            // 
+            // PanelResults
+            // 
+            PanelResults.AutoScroll = true;
+            PanelResults.Dock = DockStyle.Fill;
+            PanelResults.Location = new Point(0, 27);
+            PanelResults.Name = "PanelResults";
+            PanelResults.Size = new Size(800, 351);
+            PanelResults.TabIndex = 2;
             // 
             // GUI
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(700, 338);
-            Controls.Add(TemporalShowResults);
-            Controls.Add(TxtSearch);
+            ClientSize = new Size(800, 451);
+            Controls.Add(PanelSearchResult);
             Controls.Add(OptionsPanel);
-            Margin = new Padding(3, 2, 3, 2);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "GUI";
-            Text = "Form1";
+            Text = "Lucene.NET Information Recovery System";
+            WindowState = FormWindowState.Maximized;
             OptionsPanel.ResumeLayout(false);
             FolderGroupBox.ResumeLayout(false);
             FolderGroupBox.PerformLayout();
             PanelFolderButtons.ResumeLayout(false);
             TypeOfSourceGroupBox.ResumeLayout(false);
             TypeOfSourceGroupBox.PerformLayout();
+            PanelSearchResult.ResumeLayout(false);
+            PanelSearchResult.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -210,6 +210,7 @@
         private TextBox TxtFolder;
         private Panel PanelFolderButtons;
         private TextBox TxtSearch;
-        private RichTextBox TemporalShowResults;
+        private Panel PanelSearchResult;
+        private Panel PanelResults;
     }
 }

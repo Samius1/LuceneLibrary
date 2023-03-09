@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadDataUI));
             TxtFileLoading = new TextBox();
             ProgressBarIndex = new ProgressBar();
             BtnCloseUI = new Button();
@@ -72,7 +73,7 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.Controls.Add(BtnCloseUI, 1, 0);
             tableLayoutPanel1.Dock = DockStyle.Bottom;
-            tableLayoutPanel1.Location = new Point(0, 65);
+            tableLayoutPanel1.Location = new Point(0, 94);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -82,15 +83,19 @@
             // LoadDataUI
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(800, 103);
-            ControlBox = false;
+            ClientSize = new Size(800, 132);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(ProgressBarIndex);
             Controls.Add(TxtFileLoading);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MinimizeBox = false;
             MinimumSize = new Size(818, 150);
             Name = "LoadDataUI";
             ShowInTaskbar = false;
             Text = "Validating files";
+            FormClosing += LoadDataUI_FormClosing;
+            Load += LoadDataUI_Load;
             Shown += LoadDataUI_Shown;
             tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
