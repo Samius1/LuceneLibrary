@@ -25,14 +25,14 @@ namespace LuceneConsole.Views
             if (ValidateFiles())
             {
                 Text = "Creating Index";
+                ProgressBarIndex.Value = 0;
                 if (UseDefaultData)
                 {
-                    ProgressBarIndex.Value = 0;
                     LuceneService.InitializeIndex(FolderPath, ProgressBarIndex);
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    LuceneService.InitializeCustomIndex(FolderPath, ProgressBarIndex);
                 }
                 Succesfull = true;
             }

@@ -115,7 +115,75 @@ namespace LuceneConsole.DomainServices
                 results.Add(luceneResult);
             }
 
-            System.Diagnostics.Debug.WriteLine("---------------Ended----------------");
+            return results;
+        }
+
+        public static void InitializeCustomIndex(string folderPath, ProgressBar progressBar)
+        {
+            var indexPath = Path.Combine(folderPath, "index");
+
+            using var dir = FSDirectory.Open(indexPath);
+
+            var stopWords = GetStoppedWords();
+            var analyzer = new EnglishAnalyzer(AppLuceneVersion, stopWords);
+
+            var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
+            using var writer = new IndexWriter(dir, indexConfig);
+            foreach (var file in System.IO.Directory.GetFiles(folderPath))
+            {
+                var content = File.ReadAllText(file);
+                var document = new Document
+                {
+                    new StringField("FilePath", file, Field.Store.YES),
+                    new TextField("Content", content, Field.Store.YES)
+                };
+                writer.AddDocument(document);
+                progressBar.Value++;
+            }
+
+            writer.Flush(triggerMerge: false, applyAllDeletes: false);
+        }
+
+        public static IEnumerable<LuceneResult> GetCustomResults(string folderPath, string userQuery)
+        {
+            var indexPath = Path.Combine(folderPath, "index");
+
+            using var dir = FSDirectory.Open(indexPath);
+
+            var stopWords = GetStoppedWords();
+            var analyzer = new EnglishAnalyzer(AppLuceneVersion, stopWords);
+
+            var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
+            using var writer = new IndexWriter(dir, indexConfig);
+
+            var queryParser = new MultiFieldQueryParser(
+                                        AppLuceneVersion,
+                                        new[] { "Content" },
+                                        analyzer);
+
+            using var reader = writer.GetReader(applyAllDeletes: true);
+            var searcher = new IndexSearcher(reader);
+            var query = queryParser.Parse(userQuery);
+            var hits = searcher.Search(query, 20).ScoreDocs;
+
+            var htmlFormatter = new SimpleHTMLFormatter();
+            var highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
+
+            var results = new List<LuceneResult>();
+            foreach (var hit in hits.OrderByDescending(x => x.Score))
+            {
+                var luceneResult = new LuceneResult();
+                var foundDoc = searcher.Doc(hit.Doc);
+
+                var highlighted = GetHighlights(searcher, analyzer, highlighter, hit.Doc, "Content", foundDoc.Get("Content"));
+
+                luceneResult.FilePath = foundDoc.Get("FilePath");
+                luceneResult.Hightlights = highlighted;
+
+                System.Diagnostics.Debug.WriteLine($"Score -> {hit.Score} Author -> {luceneResult.Author}");
+
+                results.Add(luceneResult);
+            }
 
             return results;
         }

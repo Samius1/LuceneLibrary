@@ -75,7 +75,9 @@ namespace LuceneConsole
             if (e.KeyCode == Keys.Enter)
             {
                 ResetResultPanel();
-                var results = LuceneService.GetResults(TxtFolder.Text, TxtSearch.Text);
+                var results = DefaultSourceButton.Checked 
+                                ? LuceneService.GetResults(TxtFolder.Text, TxtSearch.Text)
+                                : LuceneService.GetCustomResults(TxtFolder.Text, TxtSearch.Text);
 
                 foreach (var result in results.Reverse())
                 {
