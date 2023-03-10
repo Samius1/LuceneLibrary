@@ -77,7 +77,7 @@ namespace LuceneConsole
                 ResetResultPanel();
                 var results = LuceneService.GetResults(TxtFolder.Text, TxtSearch.Text);
 
-                foreach (var result in results)
+                foreach (var result in results.Reverse())
                 {
                     var resultComponent = new ResultComponent
                     {

@@ -42,12 +42,18 @@ namespace LuceneConsole.DomainServices
 
                 }
 
+                var titleField = new TextField("Title", title, Field.Store.YES);
+                var authorField = new TextField("Author", author, Field.Store.YES);
+                var contentField = new TextField("Content", content, Field.Store.YES);
+                titleField.Boost = 1.75f;
+                authorField.Boost = 1.75f;
+                contentField.Boost = 0.9f;
                 var document = new Document
                 {
                     new StringField("FilePath", file, Field.Store.YES),
-                    new StringField("Title", title, Field.Store.YES),
-                    new StringField("Author", author, Field.Store.YES),
-                    new TextField("Content", content, Field.Store.YES)
+                    titleField,
+                    authorField,
+                    contentField
                 };
                 writer.AddDocument(document);
                 progressBar.Value++;
@@ -68,21 +74,29 @@ namespace LuceneConsole.DomainServices
             var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
             using var writer = new IndexWriter(dir, indexConfig);
 
+            var weights = new Dictionary<string, float>
+            {
+                { "Author", 2.5f },
+                { "Title", 2.5f },
+                { "Content", 0.5f }
+            };
+
             var queryParser = new MultiFieldQueryParser(
                                         AppLuceneVersion,
-                                        new string[] { "Author", "Title", "Content" },
-                                        analyzer);
+                                        weights.Keys.ToArray(),
+                                        analyzer,
+                                        weights);
 
             using var reader = writer.GetReader(applyAllDeletes: true);
             var searcher = new IndexSearcher(reader);
             var query = queryParser.Parse(userQuery);
-            var hits = searcher.Search(query, 50).ScoreDocs;
+            var hits = searcher.Search(query, 20).ScoreDocs;
 
             var htmlFormatter = new SimpleHTMLFormatter();
             var highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
 
             var results = new List<LuceneResult>();
-            foreach (var hit in hits)
+            foreach (var hit in hits.OrderByDescending(x => x.Score))
             {
                 var luceneResult = new LuceneResult();
                 var foundDoc = searcher.Doc(hit.Doc);
@@ -96,8 +110,12 @@ namespace LuceneConsole.DomainServices
                 luceneResult.FilePath = foundDoc.Get("FilePath");
                 luceneResult.Hightlights = highlighted1;
 
+                System.Diagnostics.Debug.WriteLine($"Score -> {hit.Score} Author -> {luceneResult.Author}");
+
                 results.Add(luceneResult);
             }
+
+            System.Diagnostics.Debug.WriteLine("---------------Ended----------------");
 
             return results;
         }
