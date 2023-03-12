@@ -178,6 +178,7 @@ namespace LuceneConsole.DomainServices
                 var highlighted = GetHighlights(searcher, analyzer, highlighter, hit.Doc, "Content", foundDoc.Get("Content"));
 
                 luceneResult.FilePath = foundDoc.Get("FilePath");
+                luceneResult.Title = luceneResult.FilePath;
                 luceneResult.Hightlights = highlighted;
 
                 System.Diagnostics.Debug.WriteLine($"Score -> {hit.Score} Author -> {luceneResult.Author}");

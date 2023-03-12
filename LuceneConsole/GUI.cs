@@ -89,6 +89,10 @@ namespace LuceneConsole
                     resultComponent.SetTitle(result.Title);
                     resultComponent.SetHighlight(CompoundHtmlText(result.Hightlights));
                     resultComponent.SetPath(result.FilePath);
+                    if(string.IsNullOrWhiteSpace(result.Author))
+                    {
+                        resultComponent.HideAuthor();
+                    }
                     PanelResults.Controls.Add(resultComponent);
                 }
             }

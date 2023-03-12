@@ -4,7 +4,7 @@ namespace LuceneConsole.Views.Components
 {
     public partial class ResultComponent : UserControl
     {
-        private string FilePath;
+        private string _filePath;
 
         public ResultComponent()
         {
@@ -28,14 +28,19 @@ namespace LuceneConsole.Views.Components
 
         public void SetPath(string path)
         {
-            FilePath = path;
+            _filePath = path;
+        }
+
+        public void HideAuthor()
+        {
+            TxtAuthor.Visible = false;
         }
 
         private void TxtTitle_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
-                Process.Start("notepad.exe", FilePath);
+                Process.Start("notepad.exe", _filePath);
             }
             catch (Exception ex)
             {
@@ -45,7 +50,8 @@ namespace LuceneConsole.Views.Components
 
         private void WbHighlight_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            this.Height = TxtAuthor.Height + TxtTitle.Height + SeparatorLine.Height + WbHighlight.Document.Body.ScrollRectangle.Height;
+            var authorHeight = TxtAuthor.Visible ? TxtAuthor.Height : 0;
+            this.Height = authorHeight + TxtTitle.Height + SeparatorLine.Height + WbHighlight.Document.Body.ScrollRectangle.Height;
         }
     }
 }
